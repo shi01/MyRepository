@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title id="global_title"></title>
+<script src='/js/jquery.min.js'></script>
+<script src='/js/echarts.min.js'></script>
+<script src='/js/commons.js'></script>
+<script src='/js/menu.js'></script>
+<script src='/js/pages.js'></script>
+<script src='/third/layui/layui.min.js'></script>
+<link href='/third/layui/css/layui.min.css' rel='stylesheet'>
+<link href='/css/common.css' rel='stylesheet'>
+</head>
+
+<body>
+<div class="layui-layout layui-layout-admin">
+	<div class="layui-header"><input type="hidden" id="userpower">
+		<div id="_head_title" class="layui-logo layui-hide-xs layui-bg-black"></div>
+		<!-- 头部区域（可配合layui 已有的水平导航） -->
+		<ul class="layui-nav layui-layout-left">
+		</ul>
+		<ul class="layui-nav layui-layout-right">
+			<li class="layui-nav-item layui-hide layui-show-md-inline-block">
+				<a href="javascript:;">
+					<img src="/img/2.jpg" class="layui-nav-img">
+					<font id="_head_user"></font>
+				</a>
+				<dl class="layui-nav-child">
+					<dd><a href="#" onclick="personal()">个人中心</a></dd>
+					<dd><a href="#" onclick="logOut()">退出</a></dd>
+				</dl>
+			</li>
+		</ul>
+	</div>
+
+	<div class="layui-side layui-bg-black">
+		<div class="layui-side-scroll">
+			<!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+			<ul class="layui-nav layui-nav-tree" lay-filter="menus" id="menus"></ul>
+		</div>
+	</div>
+
+	<div class="layui-body">
+		<div style="font-size:30px;text-align: center;margin-top: 200px;">
+			欢迎使用
+		</div>
+	</div>
+</div>
+</body>
+</html>
+<script>
+var domain = "";
+$(document).ready(function() {
+	getMenus();
+});
+</script>
+
+<script type="text/javascript">
+	initHead();
+
+	$.ajax({
+		type : 'get',
+		url : "/admin/home/data",
+		data : {token:token},
+		success : function(result) {
+			if (result.code == 200) {
+				initData(result.data)
+			} else {
+				alert(result.message);
+			}
+		},
+		error : function(error) {
+			alert('请求错误,请稍后重试!');
+		}
+	})
+	
+	var optionxAxisData=[];
+	var optionseriesData=[];
+    var colorList = ['#c23531','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83', '#ca8622'];
+	
+	function initData(data){
+		for(var i=0; i<data.length; i++){
+			optionxAxisData[i] = data[i].name;
+			optionseriesData[i] = {value:data[i].value,itemStyle:{color: colorList[i % colorList.length]}};
+		}	
+		loadBarDiv(optionxAxisData,optionseriesData);
+	}
+	
+	function loadBarDiv(optionxAxisData,optionseriesData){
+		//指定图标的配置和数据
+	    var option = {
+	        title:{
+	            text:'柱状图'
+	        },
+	        tooltip:{},
+	        legend:{
+	            data:['用户来源']
+	        },
+	        xAxis:{
+	        	data : optionxAxisData
+	        },
+	        yAxis:{
+
+	        },
+	        series:[{
+	            name:'访问量',
+	            type:'bar',//line折线图，bar柱状图
+	        	data :optionseriesData,
+	        }]
+	    };
+		
+	    //初始化echarts实例
+	    var myChart = echarts.init(document.getElementById('barDiv'));
+	    //使用制定的配置项和数据显示图表
+	    myChart.setOption(option);
+	}
+	
+    
+    //指定图标的配置和数据
+    var option2 = {
+        title:{
+            text:'折线图'
+        },
+        tooltip:{},
+        legend:{
+            data:['用户来源']
+        },
+        xAxis:{
+            data:["Android","IOS","PC","Ohter"],
+        },
+        yAxis:{
+       	 	display: true,
+        },
+        series:[{
+            name:'访问量',
+            type:'line',//line折线图，bar柱状图
+            data:[500,200,360,100]
+        }]
+    };
+    
+    var option31 = {
+        title:{
+            text:'饼图'
+        },     
+        series:[{
+            name:'访问量',
+            type:'pie',    //饼图
+            radius:'60%', 
+            data:[
+                {value:500,name:'Android'},
+                {value:200,name:'IOS'},
+                {value:360,name:'PC'},
+                {value:100,name:'Ohter'}
+            ]
+        }]
+    };
+    
+	var option4 = {
+      title : {
+        text: '雷达图',     //这里的参数是整个图标的标题 后面也可以加注释
+        subtext: '20220414'
+      },
+      tooltip : {
+        trigger: 'item',
+      },
+      legend: {
+        orient : 'vertical',              //这里主要是标识不同颜色代表不同的同学
+        x : 'right',
+        y : 'bottom',
+        data:['A同学成绩 ', 'B同学成绩 ']
+      },
+	  //工具栏配置
+      toolbox: {
+        show : false,//工具栏
+        feature : {
+          mark : {show: true},
+          //是否显示数据源				是否允许修改数据
+          dataView : {show: true, readOnly: true},
+          restore : {show: false},//隐藏刷新按钮
+          saveAsImage : {show: true},//隐藏下载按钮
+        }
+      },
+      polar : [
+        {
+          indicator : [
+            { text: '素质必修课 ', max: 5.0, color: 'green'},    //这里用于设置各轴的参数以及最大值
+            { text: '核心必修课 ', max: 5.0, color: 'red'},
+            { text: '一般必修课 ', max: 5.0, color: 'blue'},
+            { text: '通识必修课', max: 5.0, color: 'gray'},
+            { text: '通识限选课', max: 5.0, color: ''}, 
+          ]
+        }
+      ],
+      calculable : true,
+      series : [
+        {
+          name: '学分说明',
+          type: 'radar',
+          data : [
+            {
+              value : [3.5, 4.8, 3.2, 4.7, 4.5],
+              name : 'A同学 '
+            },
+            {
+              value : [4.2, 4.1, 3.9, 3.7, 3.5 ],
+              name : 'B同学 '
+            }
+          ]
+        }
+      ]
+    }
+
+    //初始化echarts实例
+    var myChart2 = echarts.init(document.getElementById('lineDiv'));
+    //使用制定的配置项和数据显示图表
+    myChart2.setOption(option2);
+    
+    //初始化echarts实例
+    var myChart3 = echarts.init(document.getElementById('pieDiv'));
+    //使用制定的配置项和数据显示图表
+    myChart3.setOption(option31);
+    
+    //初始化echarts实例
+//     var myChart4 = echarts.init(document.getElementById('radarDiv'),'dark');
+    var myChart4 = echarts.init(document.getElementById('radarDiv'),'black');
+    //使用制定的配置项和数据显示图表
+    myChart4.setOption(option4);
+</script>

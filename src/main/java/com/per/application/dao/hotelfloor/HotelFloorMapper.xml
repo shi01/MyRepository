@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.per.application.dao.hotelfloor.HotelFloorMapper">
+	<resultMap type="com.per.application.entity.hotelfloor.HotelFloor" id="baseResult">
+		<result column="id" property="id" />
+		<result column="floor_name" property="floorName" />
+		<result column="state" property="state" />
+	</resultMap>
+
+	<sql id="baseSql">
+		id,floor_name,state
+	</sql>
+
+	<select id="findById" resultMap="baseResult" parameterType="java.lang.Long">
+		select <include refid="baseSql" />
+		from hotel_floor where id=#{value}
+	</select>
+
+	<select id="findBySearch" resultMap="baseResult" parameterType="com.per.application.entity.hotelfloor.HotelFloor">
+		select <include refid="baseSql" />
+		from hotel_floor
+		<where>
+			1=1
+			<if test="id != null and id !=''"> and id = #{id}</if>
+			<if test="floorName != null and floorName !=''"> and floor_name = #{floorName}</if>
+			<if test="state != null and state !=''"> and state = #{state}</if>
+		</where>
+	</select>
+
+	<insert id="insert" parameterType="com.per.application.entity.hotelfloor.HotelFloor" useGeneratedKeys="true" keyProperty="id">
+		insert hotel_floor
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null and id !=''"> id,</if>
+			<if test="floorName != null and floorName !=''"> floor_name,</if>
+			<if test="state != null and state !=''"> state,</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null and id !=''"> #{id},</if>
+			<if test="floorName != null and floorName !=''"> #{floorName},</if>
+			<if test="state != null and state !=''"> #{state},</if>
+		</trim>
+	</insert>
+
+	<update id="updateById" parameterType="com.per.application.entity.hotelfloor.HotelFloor">
+		UPDATE hotel_floor
+		SET
+		<trim suffixOverrides=",">
+			<if test="id != null and id !=''"> id = #{id},</if>
+			<if test="floorName != null and floorName !=''"> floor_name = #{floorName},</if>
+			<if test="state != null and state !=''"> state = #{state},</if>
+		</trim>
+		WHERE id = #{id}
+	</update>
+
+	<delete id="deleteById" parameterType="java.lang.Long">
+		delete from hotel_floor where id =#{value}
+	</delete>
+
+</mapper>

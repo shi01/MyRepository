@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title id="global_title"></title>
+<script src='/js/jquery.min.js'></script>
+<script src='/js/commons.js'></script>
+<script src='/third/layui/layui.min.js'></script>
+<link href='/third/layui/css/layui.min.css' rel='stylesheet'>
+<link href='/css/common.css' rel='stylesheet'>
+</head>
+<body>
+	<div>
+		<br>
+		<div class="layui-form">
+			<form id="editForm" class="layui-form layui-form-pane"  style="margin-left: 80px;">
+				<div class="layui-form-item">
+					<label class="layui-form-label"><font color="red">*</font>旧密码</label>
+					<div class="layui-input-inline">
+						<input type="password" id="old" name="old" required lay-verify="required" autocomplete="off" placeholder="请输入旧密码" class="layui-input">
+					</div>
+					<div class="layui-form-mid layui-word-aux"></div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label"><font color="red">*</font>新密码</label>
+					<div class="layui-input-inline">
+						<input type="password" id="password" name="password" required lay-verify="required" autocomplete="off" placeholder="请输入新密码" class="layui-input">
+					</div>
+					<div class="layui-form-mid layui-word-aux"></div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label"><font color="red">*</font>新密码</label>
+					<div class="layui-input-inline">
+						<input type="password" id="password2" required lay-verify="required" autocomplete="off" placeholder="请再次输入新密码" class="layui-input">
+					</div>
+					<div class="layui-form-mid layui-word-aux"></div>
+				</div>
+	
+				<div class="layui-form-item" style="text-align: center;margin-left: 10px;">
+					<input type="reset" value="重置" class="layui-btn layui-btn-primary" />
+					<input type="button" class="layui-btn layui-btn-normal" lay-submit lay-filter="sbtn" value="保存" />
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+</html>
+<script>
+layui.use([ 'form', 'laydate' ], function() {
+	var laydate = layui.laydate;
+	//执行一个laydate实例
+	laydate.render({
+		elem : '#time', //指定元素
+		type : 'datetime'
+	});
+
+	var form = layui.form;
+	//监听
+	form.on('submit(sbtn)', function(data) {
+		save();
+		return false;
+	});
+	
+	form.verify({
+	    otherReq: function(value,item){
+	        var $ = layui.$;
+	        var verifyName=$(item).attr('name')
+	        , verifyType=$(item).attr('type')
+	        ,formElem=$(item).parents('.layui-form')//获取当前所在的form元素，如果存在的话
+			,verifyElem=formElem.find('input[name='+verifyName+']')//获取需要校验的元素
+			,isTrue= verifyElem.is(':checked')//是否命中校验
+			,focusElem = verifyElem.next().find('i.layui-icon');//焦点元素
+	  		if(!isTrue || !value){
+				//定位焦点
+				focusElem.css(verifyType=='radio'?{"color":"#FF5722"}:{"border-color":"#FF5722"});
+				//对非输入框设置焦点
+				focusElem.first().attr("tabIndex","1").css("outline","0").blur(function() {
+				    focusElem.css(verifyType=='radio'?{"color":""}:{"border-color":""});
+				 }).focus();
+				return '必填项不能为空';
+	  		}	
+		}
+	});
+	
+});
+</script>
+<script>
+
+var subLoding = "";
+function save() {
+	if($("#password").val() != $("#password2").val()){
+		err('二次输入新密码不一致!');
+		return;		
+	}
+	
+	var data = $("#editForm").serialize() + "&token=" + token;
+	subLoding = showLoading();
+	$.ajax({
+		type : 'post',
+		url : domain + "/admin/user/pwd",
+		data : data,
+		success : function(result) {
+			if (result.code == 200) {
+				layer.close(subLoding);
+				okAndClose();
+			} else {
+				layer.close(subLoding);
+				err(result.message);
+			}
+		},
+		error : function(error) {
+			layer.close(subLoding);
+			err('请求错误,请稍后重试!');
+		}
+	})
+}
+</script>

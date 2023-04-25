@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.per.application.dao.sysuser.SysUserMapper">
+	<resultMap type="com.per.application.entity.sysuser.SysUser" id="baseResult">
+		<result column="id" property="id" />
+		<result column="name" property="name" />
+		<result column="username" property="username" />
+		<result column="password" property="password" />
+		<result column="role_id" property="roleId" />
+	</resultMap>
+	
+	<resultMap type="com.per.application.entity.sysuser.SysUser" id="moreBaseResult" extends="baseResult">
+		<result column="id" property="id" />
+		<result column="name" property="name" />
+		<result column="username" property="username" />
+		<result column="password" property="password" />
+		<result column="role_id" property="roleId" />
+	</resultMap>
+
+	<sql id="baseSql">
+		id,name,username,password,role_id
+	</sql>
+
+	<select id="findById" resultMap="baseResult" parameterType="java.lang.Long">
+		select <include refid="baseSql" />
+		from sys_user where id=#{value}
+	</select>
+	
+	<select id="findByAccount" resultMap="baseResult" parameterType="com.per.application.entity.sysuser.SysUser">
+		select <include refid="baseSql" />
+		from sys_user where binary username=#{username} and password=#{password}
+	</select>
+	
+	<select id="findMoreByUserId" resultType="map" parameterType="map">
+		SELECT rp.power, rp.menu_id menuId,
+			sm.sort, sm.`describe`, sm.parent_id parentId, sm.url,sm.has_son has
+		FROM
+			`sys_user` su
+		LEFT JOIN sys_role_permission rp ON su.role_id = rp.role_id
+		LEFT JOIN sys_menus sm ON rp.menu_id = sm.id
+		WHERE
+			su.id = #{userId}
+			<if test="type == 1"> AND parent_id IS NULL</if>
+			<if test="type == 2"> AND parent_id IS NOT NULL</if>
+			ORDER BY sort
+	</select>
+
+	<select id="findBySearch" resultMap="baseResult" parameterType="com.per.application.entity.sysuser.SysUser">
+		select <include refid="baseSql" />
+		from sys_user
+		<where>
+			1=1
+			<if test="id != null "> and id = #{id}</if>
+			<if test="name != null and name !=''"> and name = #{name}</if>
+			<if test="username != null and username !=''"> and username = #{username}</if>
+			<if test="password != null and password !=''"> and password = #{password}</if>
+			<if test="roleId != null "> and role_id = #{roleId}</if>
+		</where>
+	</select>
+
+	<insert id="insert" parameterType="com.per.application.entity.sysuser.SysUser" useGeneratedKeys="true" keyProperty="id">
+		insert sys_user
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null "> id,</if>
+			<if test="name != null and name !=''"> name,</if>
+			<if test="username != null and username !=''"> username,</if>
+			<if test="password != null and password !=''"> password,</if>
+			<if test="roleId != null "> role_id,</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null "> #{id},</if>
+			<if test="name != null and name !=''"> #{name},</if>
+			<if test="username != null and username !=''"> #{username},</if>
+			<if test="password != null and password !=''"> #{password},</if>
+			<if test="roleId != null "> #{roleId},</if>
+		</trim>
+	</insert>
+
+	<update id="updateById" parameterType="com.per.application.entity.sysuser.SysUser">
+		UPDATE sys_user
+		SET
+		<trim suffixOverrides=",">
+			<if test="id != null "> id = #{id},</if>
+			<if test="name != null and name !=''"> name = #{name},</if>
+			<if test="username != null and username !=''"> username = #{username},</if>
+			<if test="password != null and password !=''"> password = #{password},</if>
+			<if test="roleId != null "> role_id = #{roleId},</if>
+		</trim>
+		WHERE id = #{id}
+	</update>
+
+	<delete id="deleteById" parameterType="java.lang.Long">
+		delete from sys_user where id =#{value}
+	</delete>
+
+</mapper>

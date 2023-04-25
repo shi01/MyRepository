@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.per.application.dao.sysdict.SysDictMapper">
+	<resultMap type="com.per.application.entity.sysdict.SysDict" id="baseResult">
+		<result column="id" property="id" />
+		<result column="type" property="type" />
+		<result column="val" property="val" />
+		<result column="label" property="label" />
+		<result column="describe" property="describe" />
+		<result column="sort" property="sort" />
+		<result column="parent_id" property="parentId" />
+		<result column="state" property="state" />
+	</resultMap>
+
+	<sql id="baseSql">
+		id,type,val,label,`describe`,sort,parent_id,state
+	</sql>
+
+	<select id="findById" resultMap="baseResult" parameterType="java.lang.Long">
+		select <include refid="baseSql" />
+		from sys_dict where id=#{value}
+	</select>
+
+	<select id="findBySearch" resultMap="baseResult" parameterType="com.per.application.entity.sysdict.SysDict">
+		select <include refid="baseSql" />
+		from sys_dict
+		<where>
+			1=1
+			<if test="id != null"> and id = #{id}</if>
+			<if test="type != null and type !=''"> and type =#{type}</if>
+			<if test="val != null and val !=''"> and val = #{val}</if>
+			<if test="label != null and label !=''"> and label LIKE CONCAT('%',#{label},'%')</if>
+			<if test="describe != null and describe !=''"> and `describe` LIKE CONCAT('%',#{describe},'%')</if>
+			<if test="sort != null"> and sort = #{sort}</if>
+			<if test="parentId != null"> and parent_id = #{parentId}</if>
+			<if test="state != null and state !=''"> and state = #{state}</if>
+		</where>
+	</select>
+
+	<insert id="insert" parameterType="com.per.application.entity.sysdict.SysDict" useGeneratedKeys="true" keyProperty="id">
+		insert sys_dict
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null"> id,</if>
+			<if test="type != null and type !=''"> type,</if>
+			<if test="val != null and val !=''"> val,</if>
+			<if test="label != null and label !=''"> label,</if>
+			<if test="describe != null and describe !=''"> `describe`,</if>
+			<if test="sort != null"> sort,</if>
+			<if test="parentId != null"> parent_id,</if>
+			<if test="state != null and state !=''"> state,</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null"> #{id},</if>
+			<if test="type != null and type !=''"> #{type},</if>
+			<if test="val != null and val !=''"> #{val},</if>
+			<if test="label != null and label !=''"> #{label},</if>
+			<if test="describe != null and describe !=''"> #{describe},</if>
+			<if test="sort != null"> #{sort},</if>
+			<if test="parentId != null"> #{parentId},</if>
+			<if test="state != null and state !=''"> #{state},</if>
+		</trim>
+	</insert>
+
+	<update id="updateById" parameterType="com.per.application.entity.sysdict.SysDict">
+		UPDATE sys_dict
+		SET
+		<trim suffixOverrides=",">
+			<if test="id != null"> id = #{id},</if>
+			<if test="type != null and type !=''"> type = #{type},</if>
+			<if test="val != null and val !=''"> val = #{val},</if>
+			<if test="label != null and label !=''"> label = #{label},</if>
+			<if test="describe != null and describe !=''"> `describe` = #{describe},</if>
+			<if test="sort != null"> sort = #{sort},</if>
+			<if test="parentId != null"> parent_id = #{parentId},</if>
+			<if test="state != null and state !=''"> state = #{state},</if>
+		</trim>
+		WHERE id = #{id}
+	</update>
+
+	<delete id="deleteById" parameterType="java.lang.Long">
+		delete from sys_dict where id =#{value}
+	</delete>
+
+</mapper>

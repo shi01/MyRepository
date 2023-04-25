@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title id="global_title"></title>
+<script src='/js/jquery.min.js'></script>
+<script src='/js/commons.js'></script>
+<script src='/third/layui/layui.min.js'></script>
+<link href='/third/layui/css/layui.min.css' rel='stylesheet'>
+<link href='/css/common.css' rel='stylesheet'>
+</head>
+<body>
+<br>
+	<div class="layui-form"  style="margin-left: 20px;">
+		<form id="editForm" class="layui-form layui-form-pane">
+			<input type="hidden" id="id" name="id">
+			<div class="layui-form-item">
+				<label class="layui-form-label"><font color="red">*</font>类别</label>
+				<div class="layui-input-inline">
+					<input type="text" id="type" name="type" required  style="background:#fafafa" readonly="true"
+						lay-verify="required" autocomplete="off" class="layui-input">
+				</div>
+				<div class="layui-form-mid layui-word-aux"></div>
+				
+				<label class="layui-form-label"><font color="red">*</font>编号</label>
+				<div class="layui-input-inline">
+					<input type="text" id="sort" name="sort" required
+						lay-verify="required" autocomplete="off" class="layui-input">
+				</div>
+				<div class="layui-form-mid layui-word-aux"></div>
+			</div>
+			
+			<div class="layui-form-item">
+				<label class="layui-form-label"><font color="red">*</font>文字</label>
+				<div class="layui-input-inline">
+					<input type="text" id="label" name="label" required placeholder="label"
+						lay-verify="required" autocomplete="off" class="layui-input">
+				</div>
+				<div class="layui-form-mid layui-word-aux"></div>
+				
+				<label class="layui-form-label"><font color="red">*</font>键值</label>
+				<div class="layui-input-inline">
+					<input type="text" id="val" name="val"   required  lay-verify="required"
+						placeholder="val" autocomplete="off" class="layui-input">
+				</div>
+				<div class="layui-form-mid layui-word-aux"></div>
+			</div>
+
+
+			<div class="layui-form-item">
+				<label class="layui-form-label"><font color="red">*</font>描述</label>
+				<div class="layui-input-inline" style="width: 73%;">
+					<input type="text" id="describe" name="describe" required  lay-verify="required" class="layui-input" placeholder="描述">
+				</div>
+				<div class="layui-form-mid layui-word-aux"></div>
+			</div>
+			<div style="float: right; margin-right: 20px;">
+				<input type="button" lay-submit lay-filter="sbtn"
+					class="layui-btn layui-btn-normal" value="保存" />
+			</div>
+		</form>
+	</div>
+</body>
+</html>
+<script>
+layui.use([ 'form', 'laydate' ], function() {
+	var form = layui.form;
+	//监听提交
+	form.on('submit(sbtn)', function(data) {
+		save();
+		return false;
+	});
+	$.ajax({
+		type : 'get',
+		url : domain + "/admin/dict/detail",
+		data : {
+			id : id,
+			token : token
+		},
+		success : function(result) {
+			if (result.code == 200) {
+				$("#type").val(result.data.type);
+				$("#state").val(result.data.state);
+				$("#describe").val(result.data.describe);
+				$("#sort").val(result.data.sort);
+				$("#label").val(result.data.label);
+				$("#val").val(result.data.val);
+				$("#id").val(id);
+				form.render();
+			} else {
+				err(result.message);
+			}
+		},
+		error : function(error) {
+			err('请求错误,请稍后重试!');
+		}
+	})
+});
+</script>
+<script>
+var id = getParam('id');
+$(document).ready(function() {
+	
+});
+
+var subLoding = "";
+function save() {
+	var data = $("#editForm").serialize() + "&token=" + token;
+	subLoding = showLoading();
+	$.ajax({
+		type : 'post',
+		url : domain + "/admin/dict/update",
+		data : data,
+		success : function(result) {
+			if (result.code == 200) {
+				layer.close(subLoding);
+				okAndClose();
+			} else {
+				layer.close(subLoding);
+				err(result.message);
+			}
+		},
+		error : function(error) {
+			layer.close(subLoding);
+			err('请求错误,请稍后重试!');
+		}
+	})
+}
+</script>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.per.application.dao.hotelroom.HotelRoomMapper">
+	<resultMap type="com.per.application.entity.hotelroom.HotelRoom" id="baseResult">
+		<result column="id" property="id" />
+		<result column="room_num" property="roomNum" />
+		<result column="type" property="type" />
+		<result column="bed" property="bed" />
+		<result column="price" property="price" />
+		<result column="vip_price" property="vipPrice" />
+		<result column="floor_id" property="floorId" />
+		<result column="state" property="state" />
+	</resultMap>
+
+	<sql id="baseSql">
+		id,room_num,type,bed,price,vip_price,floor_id,state
+	</sql>
+
+	<select id="findById" resultMap="baseResult" parameterType="java.lang.Long">
+		select <include refid="baseSql" />
+		from hotel_room where id=#{value}
+	</select>
+
+	<select id="findBySearch" resultMap="baseResult" parameterType="com.per.application.entity.hotelroom.HotelRoom">
+		select <include refid="baseSql" />
+		from hotel_room
+		<where>
+			1=1
+			<if test="id != null and id !=''"> and id = #{id}</if>
+			<if test="roomNum != null and roomNum !=''"> and room_num = #{roomNum}</if>
+			<if test="type != null and type !=''"> and type = #{type}</if>
+			<if test="bed != null and bed !=''"> and bed = #{bed}</if>
+			<if test="price != null and price !=''"> and price = #{price}</if>
+			<if test="vipPrice != null and vipPrice !=''"> and vip_price = #{vipPrice}</if>
+			<if test="floorId != null and floorId !=''"> and floor_id = #{floorId}</if>
+			<if test="state != null and state !=''"> and state = #{state}</if>
+		</where>
+	</select>
+
+	<insert id="insert" parameterType="com.per.application.entity.hotelroom.HotelRoom" useGeneratedKeys="true" keyProperty="id">
+		insert hotel_room
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null and id !=''"> id,</if>
+			<if test="roomNum != null and roomNum !=''"> room_num,</if>
+			<if test="type != null and type !=''"> type,</if>
+			<if test="bed != null and bed !=''"> bed,</if>
+			<if test="price != null and price !=''"> price,</if>
+			<if test="vipPrice != null and vipPrice !=''"> vip_price,</if>
+			<if test="floorId != null and floorId !=''"> floor_id,</if>
+			<if test="state != null and state !=''"> state,</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null and id !=''"> #{id},</if>
+			<if test="roomNum != null and roomNum !=''"> #{roomNum},</if>
+			<if test="type != null and type !=''"> #{type},</if>
+			<if test="bed != null and bed !=''"> #{bed},</if>
+			<if test="price != null and price !=''"> #{price},</if>
+			<if test="vipPrice != null and vipPrice !=''"> #{vipPrice},</if>
+			<if test="floorId != null and floorId !=''"> #{floorId},</if>
+			<if test="state != null and state !=''"> #{state},</if>
+		</trim>
+	</insert>
+
+	<update id="updateById" parameterType="com.per.application.entity.hotelroom.HotelRoom">
+		UPDATE hotel_room
+		SET
+		<trim suffixOverrides=",">
+			<if test="id != null and id !=''"> id = #{id},</if>
+			<if test="roomNum != null and roomNum !=''"> room_num = #{roomNum},</if>
+			<if test="type != null and type !=''"> type = #{type},</if>
+			<if test="bed != null and bed !=''"> bed = #{bed},</if>
+			<if test="price != null and price !=''"> price = #{price},</if>
+			<if test="vipPrice != null and vipPrice !=''"> vip_price = #{vipPrice},</if>
+			<if test="floorId != null and floorId !=''"> floor_id = #{floorId},</if>
+			<if test="state != null and state !=''"> state = #{state},</if>
+		</trim>
+		WHERE id = #{id}
+	</update>
+
+	<delete id="deleteById" parameterType="java.lang.Long">
+		delete from hotel_room where id =#{value}
+	</delete>
+
+</mapper>

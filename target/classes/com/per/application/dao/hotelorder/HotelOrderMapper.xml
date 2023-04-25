@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.per.application.dao.hotelorder.HotelOrderMapper">
+	<resultMap type="com.per.application.entity.hotelorder.HotelOrder" id="baseResult">
+		<result column="id" property="id" />
+		<result column="order_num" property="orderNum" />
+		<result column="start_date" property="startDate" />
+		<result column="end_date" property="endDate" />
+		<result column="customer_name" property="customerName" />
+		<result column="phone" property="phone" />
+		<result column="num" property="num" />
+		<result column="room_id" property="roomId" />
+		<result column="create_time" property="createTime" />
+		<result column="order_type" property="orderType" />
+		<result column="state" property="state" />
+	</resultMap>
+
+	<sql id="baseSql">
+		id,order_num,start_date,end_date,customer_name,phone,num,room_id,create_time,order_type,state
+	</sql>
+
+	<select id="findById" resultMap="baseResult" parameterType="java.lang.Long">
+		select <include refid="baseSql" />
+		from hotel_order where id=#{value}
+	</select>
+
+	<select id="findBySearch" resultMap="baseResult" parameterType="com.per.application.entity.hotelorder.HotelOrder">
+		select <include refid="baseSql" />
+		from hotel_order
+		<where>
+			1=1
+			<if test="id != null and id !=''"> and id = #{id}</if>
+			<if test="orderNum != null and orderNum !=''"> and order_num = #{orderNum}</if>
+			<if test="startDate != null "> and start_date = #{startDate}</if>
+			<if test="endDate != null "> and end_date = #{endDate}</if>
+			<if test="customerName != null and customerName !=''"> and customer_name = #{customerName}</if>
+			<if test="phone != null and phone !=''"> and phone = #{phone}</if>
+			<if test="num != null and num !=''"> and num = #{num}</if>
+			<if test="roomId != null and roomId !=''"> and room_id = #{roomId}</if>
+			<if test="createTime != null "> and create_time = #{createTime}</if>
+			<if test="orderType != null and orderType !=''"> and order_type = #{orderType}</if>
+			<if test="state != null and state !=''"> and state = #{state}</if>
+		</where>
+	</select>
+
+	<insert id="insert" parameterType="com.per.application.entity.hotelorder.HotelOrder" useGeneratedKeys="true" keyProperty="id">
+		insert hotel_order
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null and id !=''"> id,</if>
+			<if test="orderNum != null and orderNum !=''"> order_num,</if>
+			<if test="startDate != null "> start_date,</if>
+			<if test="endDate != null "> end_date,</if>
+			<if test="customerName != null and customerName !=''"> customer_name,</if>
+			<if test="phone != null and phone !=''"> phone,</if>
+			<if test="num != null and num !=''"> num,</if>
+			<if test="roomId != null and roomId !=''"> room_id,</if>
+			<if test="createTime != null "> create_time,</if>
+			<if test="orderType != null and orderType !=''"> order_type,</if>
+			<if test="state != null and state !=''"> state,</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null and id !=''"> #{id},</if>
+			<if test="orderNum != null and orderNum !=''"> #{orderNum},</if>
+			<if test="startDate != null "> #{startDate},</if>
+			<if test="endDate != null "> #{endDate},</if>
+			<if test="customerName != null and customerName !=''"> #{customerName},</if>
+			<if test="phone != null and phone !=''"> #{phone},</if>
+			<if test="num != null and num !=''"> #{num},</if>
+			<if test="roomId != null and roomId !=''"> #{roomId},</if>
+			<if test="createTime != null "> #{createTime},</if>
+			<if test="orderType != null and orderType !=''"> #{orderType},</if>
+			<if test="state != null and state !=''"> #{state},</if>
+		</trim>
+	</insert>
+
+	<update id="updateById" parameterType="com.per.application.entity.hotelorder.HotelOrder">
+		UPDATE hotel_order
+		SET
+		<trim suffixOverrides=",">
+			<if test="id != null and id !=''"> id = #{id},</if>
+			<if test="orderNum != null and orderNum !=''"> order_num = #{orderNum},</if>
+			<if test="startDate != null "> start_date = #{startDate},</if>
+			<if test="endDate != null "> end_date = #{endDate},</if>
+			<if test="customerName != null and customerName !=''"> customer_name = #{customerName},</if>
+			<if test="phone != null and phone !=''"> phone = #{phone},</if>
+			<if test="num != null and num !=''"> num = #{num},</if>
+			<if test="roomId != null and roomId !=''"> room_id = #{roomId},</if>
+			<if test="createTime != null "> create_time = #{createTime},</if>
+			<if test="orderType != null and orderType !=''"> order_type = #{orderType},</if>
+			<if test="state != null and state !=''"> state = #{state},</if>
+		</trim>
+		WHERE id = #{id}
+	</update>
+
+	<delete id="deleteById" parameterType="java.lang.Long">
+		delete from hotel_order where id =#{value}
+	</delete>
+
+</mapper>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title id="global_title"></title>
+<script src='/js/jquery.min.js'></script>
+<script src='/js/commons.js'></script>
+<script src='/third/layui/layui.min.js'></script>
+<link href='/third/layui/css/layui.min.css' rel='stylesheet'>
+</head>
+<body>
+<div class="search">
+	<br>
+	<div class="layui-form"  style="margin-left: 20px;">
+		<form id="editForm" class="layui-form layui-form-pane">
+			<div class="layui-form-item">
+            	<label class="layui-form-label"><font color="red">*</font>房间号</label>
+            	<div class="layui-input-inline">
+            		<input type="text" id="roomNum" name="roomNum" required lay-verify="required" autocomplete="off" placeholder="请输入房间号" class="layui-input">
+            	</div>
+            	<div class="layui-form-mid layui-word-aux"></div>
+                
+                <label class="layui-form-label"><font color="red">*</font>楼层</label>
+                <div class="layui-input-inline">
+                    <select id="floorId" name="floorId" required lay-verify="required"  class="layui-input">
+                        <option value>---请选择---</option>
+                    </select>  
+                </div>
+                <div class="layui-form-mid layui-word-aux"></div>
+            </div>
+            <div class="layui-form-item">
+            	<label class="layui-form-label"><font color="red">*</font>房间类型</label>
+            	<div class="layui-input-inline">
+                    <select id="type" name="type" required lay-verify="required"  class="layui-input">
+                        <option value>---请选择---</option>
+                    </select>  
+            	</div>
+            	<div class="layui-form-mid layui-word-aux"></div>
+            	<label class="layui-form-label"><font color="red">*</font>床型</label>
+            	<div class="layui-input-inline">
+                    <select id="bed" name="bed" required lay-verify="required"  class="layui-input">
+                        <option value>---请选择---</option>
+                    </select>  
+            	</div>
+            	<div class="layui-form-mid layui-word-aux"></div>
+            </div>
+            <div class="layui-form-item">
+            	<label class="layui-form-label"><font color="red">*</font>标准价</label>
+            	<div class="layui-input-inline">
+            		<input type="text" id="price" name="price" required lay-verify="required" autocomplete="off" placeholder="请输入标准价" class="layui-input">
+            	</div>
+            	<div class="layui-form-mid layui-word-aux"></div>
+            	<label class="layui-form-label"><font color="red">*</font>会员价</label>
+            	<div class="layui-input-inline">
+            		<input type="text" id="vipPrice" name="vipPrice" required lay-verify="required" autocomplete="off" placeholder="请输入会员价" class="layui-input">
+            	</div>
+            	<div class="layui-form-mid layui-word-aux"></div>
+            </div>
+            <div class="layui-form-item">
+            	<label class="layui-form-label"><font color="red">*</font>状态</label>
+            	<div class="layui-input-inline">
+                    <select id="state" name="state" required lay-verify="required"  class="layui-input">
+                        <option value>---请选择---</option>
+                    </select>   
+            	</div>
+            	<div class="layui-form-mid layui-word-aux"></div>
+            </div>
+
+			<div style="float: right; margin-right: 100px;">
+				<input type="reset" class="layui-btn layui-btn-primary" value="重置" />
+				<button class="layui-btn layui-btn-normal" lay-submit lay-filter="sbtn">保存</button>
+			</div>
+		</form>
+	</div>
+</div>
+</body>
+</html>
+<script>
+layui.use([ 'form', 'laydate' ], function() {
+	var laydate = layui.laydate;
+	//执行一个laydate实例
+	laydate.render({
+		elem : '#time', //指定元素
+		type : 'datetime'
+	});
+
+	var form = layui.form;
+	//监听提交
+	form.on('submit(sbtn)', function(data) {
+		save();
+		return false;
+	});
+	
+	loadDict('room_type',form);
+	loadDictBySearch('id','floor_name','id','hotel_floor',form,'state=1');
+	loadDict('bed_type',form);
+	loadDict('home_type',form);
+	
+	form.verify({
+	    otherReq: function(value,item){
+	        var $ = layui.$;
+	        var verifyName=$(item).attr('name')
+	        , verifyType=$(item).attr('type')
+	        ,formElem=$(item).parents('.layui-form')//获取当前所在的form元素，如果存在的话
+			,verifyElem=formElem.find('input[name='+verifyName+']')//获取需要校验的元素
+			,isTrue= verifyElem.is(':checked')//是否命中校验
+			,focusElem = verifyElem.next().find('i.layui-icon');//焦点元素
+	  		if(!isTrue || !value){
+				//定位焦点
+				focusElem.css(verifyType=='radio'?{"color":"#FF5722"}:{"border-color":"#FF5722"});
+				//对非输入框设置焦点
+				focusElem.first().attr("tabIndex","1").css("outline","0").blur(function() {
+				    focusElem.css(verifyType=='radio'?{"color":""}:{"border-color":""});
+				 }).focus();
+				return '必填项不能为空';
+	  		}	
+		}
+	});
+});
+</script>
+<script>
+var subLoding = "";
+
+function loadDictAfter(result,form,type){
+	if(type=='room_type'){
+		$.each(result.data,function(index,item){
+		    $('#state').append(new Option(item.label,item.val));//往下拉菜单里添加元素
+		})
+	}
+	if(type=='home_type'){
+		$.each(result.data,function(index,item){
+		    $('#type').append(new Option(item.label,item.val));//往下拉菜单里添加元素
+		})
+	}
+	if(type=='bed_type'){
+		$.each(result.data,function(index,item){
+		    $('#bed').append(new Option(item.label,item.val));//往下拉菜单里添加元素
+		})
+	}
+	if(type=='hotel_floor'){
+		$.each(result.data,function(index,item){
+		    $('#floorId').append(new Option(item.label,item.val));//往下拉菜单里添加元素
+		})
+	}
+	form.render(); 
+}
+
+function save() {
+	var data = $("#editForm").serialize() + "&token=" + token;
+	subLoding = showLoading();
+	$.ajax({
+		type : 'post',
+		url : domain + "/admin/room/save",
+		data : data,
+		success : function(result) {
+			if (result.code == 200) {
+				layer.close(subLoding);
+				okAndClose();
+			} else {
+				layer.close(subLoding);
+				err("提交失败:"+result.message);
+			}
+		},
+		error : function(error) {
+			layer.close(subLoding);
+			err('请求错误,请稍后重试!');
+		}
+	})
+}
+</script>

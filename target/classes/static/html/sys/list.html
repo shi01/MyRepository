@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title id="global_title"></title>
+<script src='/js/jquery.min.js'></script>
+<script src='/js/commons.js'></script>
+<script src='/js/menu.js'></script>
+<script src='/js/pages.js'></script>
+<script src='/third/layui/layui.min.js'></script>
+<link href='/third/layui/css/layui.min.css' rel='stylesheet'>
+<link href='/css/common.css' rel='stylesheet'>
+</head>
+
+<body>
+<div class="layui-layout layui-layout-admin">
+	<div class="layui-header"><input type="hidden" id="userpower">
+		<div id="_head_title" class="layui-logo layui-hide-xs layui-bg-black">信息管理系统</div>
+		<!-- 头部区域（可配合layui 已有的水平导航） -->
+		<ul class="layui-nav layui-layout-left">
+		</ul>
+		<ul class="layui-nav layui-layout-right">
+			<li class="layui-nav-item layui-hide layui-show-md-inline-block">
+				<a href="javascript:;">
+					<img src="/img/2.jpg" class="layui-nav-img">
+					<font id="_head_user">asd</font>
+				</a>
+				<dl class="layui-nav-child">
+					<dd><a href="#" onclick="personal()">个人中心</a></dd>
+					<dd><a href="#" onclick="logOut()">退出</a></dd>
+				</dl>
+			</li>
+		</ul>
+	</div>
+
+	<div class="layui-side layui-bg-black">
+		<div class="layui-side-scroll">
+			<!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+			<ul class="layui-nav layui-nav-tree" lay-filter="menus" id="menus"></ul>
+		</div>
+	</div>
+
+	<div class="layui-body">
+		<!-- 内容主体区域 -->
+		<div class="body-header">
+			<div>
+				<span id="_body" class="layui-breadcrumb">
+				</span>
+			</div>
+			<h2>参数列表</h2>
+		</div>
+		<div style="padding: 20px;">
+           <div class="search">
+                <br>
+           	  <form id="searchForm">
+                <div class="layui-form-item">
+					<label class="layui-form-label">类别</label>
+                    <div class="layui-input-inline">
+                       <input type="text" name="type" required  lay-verify="required" placeholder="请输入类别" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux"></div>
+         
+                    <label class="layui-form-label">文字</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="label" required  lay-verify="required" placeholder="请输入文字" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux"></div>                    
+                    <label class="layui-form-label">描述</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="describe" required  lay-verify="required" placeholder="请输入描述" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux"></div>
+                    
+                    <div style="text-align: right; margin-right: 3px;">
+                        <input type="reset" value="重置" class="layui-btn layui-btn-primary" />
+                        <input type="button" value="查询" onclick="search()" class="layui-btn layui-btn-normal" />
+                    </div>
+                </div>
+			  </form>
+           </div>
+			<div class="table">
+				<div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+					<div id="layuipage" style="float:right;"></div>
+
+                    <div style="float: left; margin-top: 10px;">
+                    	<button class="layui-btn layui-btn-normal" onclick="add()">新增数据</button> 
+                    </div>
+                    
+					<div class="layui-tab-content">
+						<table class="layui-table">
+							<colgroup>
+								<col width="150">
+								<col width="200">
+								<col>
+							</colgroup>
+							<thead>
+							<tr style="width:100%;">
+								<th style="text-align: center; width:5%;">序号</th>
+								<th style="text-align: center;">类别</th>
+								<th style="text-align: center;">文字</th>
+								<th style="text-align: center;">值</th>
+								<th style="text-align: center;">描述</th>
+<!-- 								<th style="text-align: center; width:10%">排序</th> -->
+								<th style="text-align: center; width:10%">状态</th>
+								<th style="text-align: center;">操作</th>
+							</tr>
+							</thead>
+							<tbody id="dataList"></tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="layui-footer">
+		<!-- 底部固定区域 -->
+	</div>
+</div>
+</body>
+</html>
+<script>
+//JS
+//分页数
+//limitCount = 10;
+layui.use(['element', 'layer', 'util', 'laypage', 'laydate','form'], function(){
+	var element = layui.element
+			,layer = layui.layer
+			,util = layui.util
+			,$ = layui.$;
+	//头部事件
+	util.event('lay-header-event', {
+		//左侧菜单事件
+		menuLeft: function(othis){
+			layer.msg('展开左侧菜单的操作', {icon: 0});
+		}
+		,menuRight: function(){
+			layer.open({
+				type: 1
+				,content: '<div style="padding: 15px;">处理右侧面板的操作</div>'
+				,area: ['260px', '100%']
+				,offset: 'rt' //右上角
+				,anim: 5
+				,shadeClose: true
+			});
+		}
+	});
+	/* 分页 */
+	var laypage = layui.laypage;
+	var laydate = layui.laydate;
+	//执行一个laydate实例
+	laydate.render({
+	  elem: '#serveTime', //指定元素
+	  type: 'datetime'
+	});
+	
+	var form = layui.form;
+	//监听
+});
+
+
+var domain = "";
+$(document).ready(function() {
+	getMenus();
+	search();
+	initHead();
+});
+
+function add(){
+	layer.open({
+		 title: ['参数新增', 'font-size:16px;'],
+		  type:2,
+		  content: 'add.html',
+		  area: ['700px','300px'],
+		  closeBtn: 1,
+		  cancel: function(index, layero){ 
+			  window.parent.location.reload();
+			  layer.close(index);
+		  } 
+	});     
+}
+
+function back(){
+	window.open("/admin/sys/backup?token="+token)
+}
+
+function edit(id){
+	layer.open({
+		  title: ['参数编辑', 'font-size:16px;'],
+		  type:2,
+		  content: 'edit.html?id='+id,
+		  area: ['700px','300px'],
+		  closeBtn: 1,
+		  cancel: function(index, layero){ 
+			  window.parent.location.reload();
+			  layer.close(index);
+		  } 
+	});     
+}
+
+function search(){
+	var url ="/admin/dict/pagelist";
+	var id = 'searchForm';
+	findList(url,id);
+}
+
+function stateZh(state){
+	if(state==0){
+		return "<font color='red'>禁用</font>"
+	}else{
+		return "<font>启用</font>"
+	}
+}
+
+function stateZh2(id,state){
+	if(state==0){
+		return "<button class='layui-btn layui-btn-normal' onclick='changeState("+id+","+state+")'>启用</button>"
+	}else{
+		return "<button class='layui-btn layui-btn-danger' onclick='changeState("+id+","+state+")'>禁用</button>"
+	}
+}
+function changeState(id,state){
+	$.ajax({
+		type: 'post',
+		url: "/admin/dict/state",
+		data: {id : id, state : state,token : token},
+		success: function(result) {
+			if (result.code == 200) {
+				okAndReload();
+			} else {
+				err(result.message, { icon: 0 });
+			}
+		},
+		error: function(error) {
+			err('请求错误,请稍后重试!');
+		}
+	})
+}
+
+function openUrl(id){
+	window.open('servelist.html?id='+id).location();
+}
+
+function spellData(data){
+	var str = "";
+	for (var i = 0; i < data.length; i++) {
+		str += "<tr>"
+			+ "<td style='text-align: center;'>" + (i + 1) + "</td>"
+			+ "<td style='text-align: center;'>" + data[i].type + "</td>"
+			+ "<td style='text-align: center;'><a style='color: blue;' href='#' onclick='edit(" + data[i].id + ")'>" + data[i].label + "</a></td>"
+			+ "<td style='text-align: center;'>" + data[i].val + "</td>"
+			+ "<td style='text-align: center;'>" + data[i].describe + "</td>"
+// 			+ "<td style='text-align: center;'>" + filterNull(data[i].sort) + "</td>"
+			+ "<td style='text-align: center;'>" + stateZh(data[i].state) + "</td>"
+			+ "<td style='text-align: center;'>" + stateZh2(data[i].id,data[i].state) + "</td>"
+			+ "</tr>";
+	}
+	return str;
+}
+// <div class='layui-form'>
+// <input type="checkbox" name="state" lay-skin="switch" lay-text="开启|关闭" lay-filter="cstate">
+// </div>
+</script>

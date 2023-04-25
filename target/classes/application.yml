@@ -1,0 +1,38 @@
+server:
+  port: 8900
+#  servlet:
+#   context-path: /
+logging:
+   #使用logback自定义配置
+   config: classpath:logback-spring.xml
+#window
+logback:
+ logPath: D:/tools/tomcat8.5/ssmframe
+#Linux
+#logPath: /opt/tomcat8.5/ssmframe/logs
+jasypt:
+ encryptor:
+  password: MINGYULI
+spring:
+ profiles:
+  active: dev
+  ##数据源  
+  datasource:
+    name: std
+    driver-class-name: com.mysql.cj.jdbc.Driver
+#本地库  
+    url: jdbc:mysql://127.0.0.1:3306/hotelbook?characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8
+    username: ENC(root)
+    password: ENC(123)
+
+  #配置全局404
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+    encoding: UTF-8
+    servlet:
+     content-type: text/html
+    cache: false    #开发阶段关闭缓存
+
+swagger.enable: false

@@ -1,0 +1,303 @@
+body,html{
+    padding:0;
+    margin:0;
+    width: 100%;
+    height: 100%;
+}
+*,ul,li{
+    box-sizing: border-box;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+a:hover{
+    text-decoration: none;
+}
+.loginPage{
+    background: url("../images/bg.png") no-repeat;
+    background-size: 100% 100%;
+}
+/*登录页面*/
+.box{
+    width:800px;
+    position: fixed;
+    top:0;
+    bottom: 0;
+    left:0;
+    right:0;
+    margin:auto;
+}
+.logoTitle{
+    font-size: 50px;
+    color: #fff;
+    text-align: center;
+    margin-top: 110px;
+    margin-bottom: 90px;
+}
+.loginBox{
+    width:100%;
+    height:460px;
+    background:linear-gradient(180deg,rgba(38,182,224,1) 0%,rgba(18,97,183,1) 48%,rgba(30,61,158,1) 100%);
+    box-shadow:0px 4px 8px 0px rgba(0,0,0,0.1);
+    border-radius:6px;
+    position: relative;
+}
+.login{
+    width:543px;
+    height:500px;
+    background:rgba(255,255,255,1);
+    box-shadow:0px 0px 10px 0px rgba(0,0,0,0.2);
+    position: absolute;
+    right:138px;
+    top:-20px;
+    padding: 60px 70px;
+}
+.loginTitle{
+    font-size: 24px;
+    color: #333;
+    line-height: 33px;
+    margin-bottom: 60px;
+}
+label{
+    font-size: 16px;
+}
+.inputLine{
+    border: none;
+    outline: none;
+    border-bottom: 1px solid #ccc;
+    width: 310px;
+    font-size: 16px;
+    outline: none;
+}
+.inputLabel{
+    width: 60px;
+    text-align: right;
+    display: inline-block;
+    margin-right: 16px;
+}
+.loginBtn{
+    width:338px;
+    height:40px;
+    display: block;
+    background:rgba(0,176,249,1);
+    box-shadow:0px 4px 5px 0px rgba(0,176,249,0.3);
+    border-radius:4px;
+    margin: 0 auto;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    color: #fff;
+    cursor: pointer;
+}
+/*首页*/
+.header{
+    width: 100%;
+    height: 54px;
+    background: #fff;
+    box-shadow:0px 1px 2px 0px rgba(0,0,0,0.1);
+    padding-right: 20px;
+}
+.header>img{
+    width: 90px;
+    height: 45px;
+    float: left;
+    margin-left: 16px;
+    margin-top: 6px;
+}
+.header>div{
+    line-height: 54px;
+    font-size: 18px;
+    color: #333333;
+    padding-left: 10px;
+    float: left;
+}
+/*侧导航*/
+.main{
+    position: absolute;
+    top:54px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+}
+.left{
+    width: 15%;
+    height: 100%;
+    background: #1F2E54;
+    float: left;
+}
+.nav>li>ul>li{
+    padding: 15px 20px 15px 44px;
+    color: #fff;
+    font-size: 14px;
+    line-height: 20px;
+    cursor: pointer;
+}
+.nav>li>ul>li.active{
+    color: #00A3FF;
+}
+.nav>li>ul>.nav-item{
+    padding: 15px 20px 15px 20px;
+}
+.nav-item>img{
+    margin-right: 10px;
+}
+.nav-item{
+    padding: 15px 20px 15px 20px;
+    font-size: 14px;
+    line-height: 20px;
+    cursor: pointer;
+    background:rgba(96,167,255,0.2);
+    color: #fff;
+    border-left: 5px solid rgba(118,179,255,0.3);
+}
+.down{
+    float: right;
+    margin-top: 6px;
+    transition: .3ms;
+}
+/*主操作面板*/
+.right{
+    float: left;
+    width: 85%;
+    height: 100%;
+    padding: 20px 20px 30px 20px;
+    background: #F4F6F9;
+    position: relative;
+}
+.mainBox{
+    background: #fff;
+    position: absolute;
+    bottom: 30px;
+    top:54px;
+    left: 20px;
+    right: 20px;
+    margin: auto;
+    padding: 30px;
+    box-shadow:0px 1px 10px 0px rgba(0,0,0,0.05);
+    border-radius:2px;
+    overflow-y: scroll;
+}
+.breadcrumb{
+    padding: 0;
+    margin:0;
+    list-style: none;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    font-size: 14px;
+}
+a{
+    text-decoration: none;
+}
+.breadcrumb a{
+    color: #808080;
+}
+.breadcrumb>.active{
+    color: #333;
+    font-size: 14px;
+}
+.breadcrumb>li {
+    display: inline-block;
+}
+.breadcrumb>li+li:before {
+    padding: 0 5px;
+    color: #ccc;
+    content: "/\00a0";
+}
+.primary{
+    width:68px;
+    height:32px;
+    background:rgba(0,163,255,1);
+    border-radius:4px;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    color: #fff;
+    cursor: pointer;
+}
+/*验证报错样式*/
+label.error{
+    color: #FF2525;
+    padding-left: 86px;
+    margin-top: 10px;
+    font-size: 14px;
+}
+.inputLine.error{
+    border-color: #FF2525;
+}
+.opacity{
+    opacity: 0.4;
+}
+/*下拉框样式*/
+select{
+    width:420px;
+    height:36px;
+    border-radius:4px;
+}
+/*表格样式*/
+.layui-table tbody tr:hover{
+    background-color: #E2F3FF;
+}
+.layui-table thead tr{
+    background-color: #fff;
+    font-size: 14px;
+    color: #000;
+    font-weight: 500;
+}
+.layui-table tbody tr{
+    background-color: #F5F6F7;
+}
+.layui-table tr{
+    height: 46px;
+}
+.layui-table tr:nth-child(even){
+    background-color: #fff;
+}
+.layui-laypage .layui-laypage-curr .layui-laypage-em{
+    background-color:#00A3FF;
+}
+.layui-table-page .layui-laypage{
+    float: right;
+}
+.layui-table-view{
+    border: none;
+    box-sizing: border-box;
+}
+.layui-table-body{
+    margin: 0;
+}
+.layui-table{
+    border: 1px solid #ccc;
+}
+.layui-table td,.layui-table th{
+    border: none;
+}
+.layui-table-page .layui-laypage a,.layui-table-page .layui-laypage span{
+    border: 1px solid rgba(0,0,0,0.15);
+    margin-left: 8px;
+    border-radius:4px;
+    width: auto;
+    height: auto;
+    line-height: 30px;
+}
+.layui-table-page .layui-laypage span{
+    padding: 0px 10px;
+}
+.layui-table, .layui-table-view{
+    margin: 0;
+    width:100%
+}
+.layui-table-page{
+    padding-top: 0;
+    margin-top: 20px;
+    border: none;
+}
+.layui-table-view .layui-table th:first-child div{
+    padding-left: 60px;
+}
+.layui-table-view .layui-table td:first-child div{
+    padding-left: 60px;
+}
+.logout:hover{
+    opacity: 0.7;
+}
